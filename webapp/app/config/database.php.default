@@ -72,8 +72,20 @@
  *
  */
 class DATABASE_CONFIG {
+  
+  // mongodb specification
+  var $default = array(
+        'driver' => 'mongodb.mongodbSource',
+        'database' => 'spector',
+        'host' => 'localhost',
+        'port' => 27017,
+        /* optional auth fields
+        'login' => 'mongo', 
+        'password' => 'awesomeness',    
+        */
+  );
 
-	var $default = array(
+	var $default_sql = array(
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',

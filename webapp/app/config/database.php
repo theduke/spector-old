@@ -75,8 +75,8 @@ class DATABASE_CONFIG {
 
 	public $default = array(
         'driver' => 'mongodb.mongodbSource',
-        'database' => 'spector_test',
-        'host' => 'server.theduke.at',
+        'database' => 'spector',
+        'host' => 'localhost',
         'port' => 27017,
         /* optional auth fields
         'login' => 'mongo', 
