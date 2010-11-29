@@ -25,7 +25,7 @@ class Spector_Log
 		$entry->setEnvironment($environment);
 		$entry->setBucket($bucket);
 		$entry->setMessage($message);
-		$entry->setSeverity($severity);
+		$entry->setSeverity(strtoupper($severity));
 		$entry->setTime($time);
 		$entry->setData($data);
 		$entry->setType($type);
