@@ -1,3 +1,3 @@
 [submodule "webapp/plugins/mongodb"]
 	path = webapp/plugins/mongodb
-	url = git://github.com/ichikaway/mongoDB-Datasource.git
+	url = git://github.com/theduk3/cakephp-mongodb.git
