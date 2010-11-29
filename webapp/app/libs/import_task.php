@@ -18,13 +18,23 @@ class ImportTask
 	protected function doImport($import)
 	{
 		$remote = $import['remote'];
-	
-		$fileContent = $this->getFile($remote['host'], $remote['port'], $remote['user'], $remote['password'], $remote['path']);
+	 
+		$data = null;
+		
+		switch ($import['type'])
+		{
+			case Import::TYPE_FILE:
+				$data = $this->getFileData($remote['path']);
+				break;
+			case Import::TYPE_REMOTE_FILE:
+				$data = $this->getRemoteFile($remote['host'], $remote['port'], $remote['user'], $remote['password'], $remote['path']);
+				break;
+		}
 		
 		switch ($import['format'])
 		{
 			case Import::FORMAT_PHP:
-				$this->importLogPHP($fileContent, $import);
+				$this->importLogPHP($data, $import);
 				break;
 		}
 	}
@@ -32,6 +42,7 @@ class ImportTask
 	protected function importLogPHP($fileContent, $import)
 	{
 		$messages = explode(PHP_EOL, $fileContent);
+		$defaults = $import['defaults'];
 		
 		foreach ($messages as $message)
 		{
@@ -53,6 +64,7 @@ class ImportTask
 					$severity = 'ERROR';
 					break;
 				case 'Strict Standards':
+				case 'Deprecated':
 					$severity = 'DEBUG';
 					break;
 				default:
@@ -71,17 +83,29 @@ class ImportTask
 				'time' => $time,
 				'severity' => $severity,
 			
-				'project' => $import['project'],
+				'project' => $defaults['project'],
 				'type' => 'php',
-				'environment' => $import['environment'],
-				'bucket' => $import['bucket']
+				'environment' => $defaults['environment'],
+				'bucket' => $defaults['bucket']
 			));
 			
 			$flag = $entry->save();
 		}
 	}
 	
-	protected function getFile($host, $port, $user, $password, $path)
+	protected function getFileData($path)
+	{
+		$data = file_get_contents($path);
+		
+		if ($data === false) throw new Exception('Could not read file: ' . $path);
+		
+    // delete data
+    file_put_contents($path, '');
+    
+    return $data;
+	}
+	
+	protected function getRemoteFile($host, $port, $user, $password, $path)
 	{
 		$handle = ssh2_connect($host, (float)$port);
 		
@@ -108,7 +132,7 @@ class ImportTask
 		
 		file_put_contents($localPath, '');
 		
-		//ssh2_scp_send($handle, $localPath, $path, 0777);
+		ssh2_scp_send($handle, $localPath, $path, 0777);
 		
 		return $content;
 	}

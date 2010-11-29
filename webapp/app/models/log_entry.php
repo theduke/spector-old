@@ -21,7 +21,11 @@ class LogEntry extends AppModel
 			
 	public static function getDb()
 	{
-		$db = ConnectionManager::getDataSource('default')->getDb();
+		$source = ConnectionManager::getDataSource('default');
+		if (!$source->isConnected()) $source->connect();
+		
+		$db = $source->getDb();
+		
 		return $db;
 	}
 	
@@ -59,15 +63,28 @@ class LogEntry extends AppModel
 			if (count($buckets)) $buckets = array_combine($buckets, $buckets);
 			
 		} else {
-			$types = $environments = $buckets = array('values' => array());
+			$types = $environments = $buckets = array();
 		}
 		
+		$severities = array(
+		   'EMERGENCY',
+		   'CRITICAL',
+		   'ERROR',
+		   'WARNING',
+		   'NOTICE',
+		   'INFO',
+		   'DEBUG',
+		   'OTHER'
+		);
+		
+		$severities = array_combine($severities, $severities);
 		
 		$data = array(
 		  'projects' => $projects,
 		  'environments' => $environments,
 		  'types' => $types,
-		  'buckets' => $buckets
+		  'buckets' => $buckets,
+		  'severities' => $severities
 		);
 		
 		return $data;		

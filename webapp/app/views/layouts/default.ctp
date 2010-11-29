@@ -29,6 +29,7 @@
     echo $this->Html->meta('icon');
 
     echo $this->Html->css('cake.generic');
+    echo $this->Html->css('common');
 
     echo $scripts_for_layout;
   ?>
@@ -37,6 +38,10 @@
   <div id="container">
     <div id="header">
       <h1><?php echo $this->Html->link(__('Spector System Monitor', true), '/'); ?></h1>
+      <div id="nav">
+        <?php echo $this->Html->link(__('Logs', true), '/logs'); ?>
+        <?php echo $this->Html->link(__('Imports', true), '/imports'); ?>
+      </div>
     </div>
     <div id="content">
 

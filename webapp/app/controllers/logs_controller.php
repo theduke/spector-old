@@ -7,7 +7,7 @@ class LogsController extends AppController
 	
 	public $paginate = array(
 		'LogEntry' => array(
-			'conditions' => array('project' => 'test'),
+			'conditions' => array(),
 			'limit' => 20,        
 			'order' => array(            
 				'LogEntry.time' => 'desc')
@@ -51,6 +51,10 @@ class LogsController extends AppController
 		{
 			$this->paginate['LogEntry']['conditions']['bucket'] = $bucket;
 		}
+	  if (isset($this->data['severity']) && ($severity = $this->data['severity']))
+    {
+      $this->paginate['LogEntry']['conditions']['severity'] = $severity;
+    }
 	}
 	
 	

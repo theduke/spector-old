@@ -6,31 +6,23 @@
 		echo $form->hidden('_id');
 
 		echo $form->input('Import.name');
-		
-		echo $form->label('Type');
-		echo $form->select('Import.type', array('file' => 'file'));
-		
-		echo $form->label('Format');
-		echo $form->select('Import.format', array('csv' => 'csv', 'serialized' => 'serialized', 'php' => 'php'));
-		
-		echo $this->Form->label('Project');
-		echo $this->Form->select('Import.project', $filterData['projects']);
-		
-		echo $this->Form->label('Type');
-		echo $this->Form->select('Import.type', $filterData['types']);
-		
-		echo $this->Form->label('Environment');
-		echo $this->Form->select('Import.environment', $filterData['environments']);
+    
+    echo $form->label('Type');
+    echo $form->select('Import.type', array('remote-file' => 'remote-file', 'file' => 'file'));
+    
+    echo $form->label('Format');
+    echo $form->select('Import.format', array('csv' => 'csv', 'serialized' => 'serialized', 'php' => 'php'));
+    
+    echo $form->input('Import.defaults.project');
+    echo $form->input('Import.defaults.type');
+    echo $form->input('Import.defaults.environment');
+    echo $form->input('Import.defaults.bucket');
 
-		echo $this->Form->label('Bucket');
-		echo $this->Form->select('Import.bucket', $filterData['buckets']);
-		
-		
-		echo $form->input('Import.remote.host');
-		echo $form->input('Import.remote.port');
-		echo $form->input('Import.remote.user');
-		echo $form->input('Import.remote.password');
-		echo $form->input('Import.remote.path');
+    echo $form->input('Import.remote.host');
+    echo $form->input('Import.remote.port');
+    echo $form->input('Import.remote.user');
+    echo $form->input('Import.remote.password');
+    echo $form->input('Import.remote.path');
 	?>
 	</fieldset>
 <?php echo $form->end('Submit');?>
