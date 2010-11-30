@@ -41,11 +41,16 @@
       <div id="nav">
         <?php echo $this->Html->link(__('Logs', true), '/logs'); ?>
         <?php echo $this->Html->link(__('Imports', true), '/imports'); ?>
+        <?php echo $this->Html->link(__('Alerts', true), '/alerts'); ?>
+        <?php echo $this->Html->link(__('Users', true), '/users'); ?>
       </div>
     </div>
     <div id="content">
 
-      <?php echo $this->Session->flash(); ?>
+      <?php 
+        echo $this->Session->flash();
+        echo $this->Session->flash('auth');
+      ?>
 
       <?php echo $content_for_layout; ?>
 
