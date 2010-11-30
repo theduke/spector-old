@@ -3,6 +3,15 @@
 class LogEntry extends AppModel 
 {
 	
+	const EMERGENCY = 'EMERGENCY';
+  const CRITICAL = 'CRITICAL';
+  const ERROR = 'ERROR';
+  const WARNING = 'WARNING';
+  const NOTICE = 'NOTICE';
+  const INFO = 'INFO';
+  const DEBUG = 'DEBUG';
+  const OTHER = 'OTHER';
+	
 	public $name = 'LogEntry';
 //	public $actAs = array('Schemaless');
 	
@@ -42,6 +51,39 @@ class LogEntry extends AppModel
 		$result = $result['values'];
 		
 		return $result;
+	}
+	
+	public static function getSeverities($minimum = null)
+	{
+		$severities = array(
+       'EMERGENCY',
+       'CRITICAL',
+       'ERROR',
+       'WARNING',
+       'NOTICE',
+       'INFO',
+       'DEBUG',
+       'OTHER'
+    );
+    
+    if ($minimum)
+    {
+    	$minimum = strtoupper($minimum);
+    	
+    	$severities = array_reverse($severities);
+    	
+    	$i = 0;
+    	foreach ($severities as $sev)
+    	{
+    		if ($sev === $minimum)
+    		{
+    			$severities = array_splice($severities, $i);
+    		}
+    		++$i;
+    	}
+    }
+    
+    return $severities;
 	}
 	
 	public static function buildFilterFormData($project=null)
