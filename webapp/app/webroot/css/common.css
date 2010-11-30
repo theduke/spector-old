@@ -9,3 +9,9 @@
 #nav a {
 	color: white;
 }
+
+.log-table a
+{
+	font-weight: normal;
+	text-decoration: none;
+}

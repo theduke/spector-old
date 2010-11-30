@@ -40,7 +40,7 @@ echo '<div class="inline-block">' . $this->Form->end('Update') . '</div>';
 ?>
 </div>
 
-<table>
+<table class="log-table">
 	<tr> 
 		<th><?php echo $paginator->sort('Severity', 'severity'); ?></th> 
 		<th><?php echo $paginator->sort('Time', 'time'); ?></th> 
@@ -50,7 +50,7 @@ echo '<div class="inline-block">' . $this->Form->end('Update') . '</div>';
 	<tr> 
 		<td><?php echo $entry['LogEntry']['severity']; ?> </td> 
 		<td><?php echo date('Y-m-d H:i:s', $entry['LogEntry']['time']->sec); ?> </td>
-		<td><?php echo $entry['LogEntry']['message']; ?> </td>  
+		<td><?php echo $html->link($entry['LogEntry']['message'],'show/'.$entry['LogEntry']['_id']); ?> </td>  
 	</tr> 
 	<?php endforeach; ?> 
 </table>

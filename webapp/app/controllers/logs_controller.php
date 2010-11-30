@@ -29,6 +29,16 @@ class LogsController extends AppController
 		$this->set('params', $this->params);
 	}
 	
+	public function show($id=null)
+	{
+		if (!$id) return;
+		
+		$entry = $this->LogEntry->read(null, '4cf3ab28fd5c131a18000000');
+    if (!$entry) return;
+		
+    $this->set('entry', $entry['LogEntry']);
+	}
+	
 	protected function buildPaginate()
 	{
 		$pageSize = isset($this->data['pagesize']) ? $this->data['pagesize'] : 20;
