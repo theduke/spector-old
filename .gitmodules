@@ -1,3 +1,6 @@
 [submodule "webapp/plugins/mongodb"]
 	path = webapp/plugins/mongodb
 	url = git://github.com/theduk3/cakephp-mongodb.git
+[submodule "lib"]
+	path = lib
+	url = https://github.com/theduk3/spector-lib.git
