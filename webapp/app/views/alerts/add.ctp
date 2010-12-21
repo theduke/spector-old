@@ -35,8 +35,6 @@
 		echo $form->input('Alert.filters.environment');
 		echo $form->input('Alert.filters.bucket');
 		echo $form->input('Alert.filters.severity');
-		echo $form->input('Alert.filters.severity');
-		echo $form->input('Alert.filters.minimum_severity');
 		echo $form->input('Alert.filters.minimum_severity');
 		
 		echo $form->input('Alert.filters.message');

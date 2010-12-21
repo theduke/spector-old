@@ -36,6 +36,45 @@ class ImportTask
 			case Import::FORMAT_PHP:
 				$this->importLogPHP($data, $import);
 				break;
+			case Import::FORMAT_SERIALIZED:
+				$this->importLogSerialized($data, $import);
+				break;
+			default:
+				throw new Exception("Unknown import format: {$import['format']}");
+		}
+	}
+	
+	protected function importLogSerialized($fileContent, $import) {
+		$entries = unserialize($fileContent);
+		
+		if ($entries === false || !is_array($entries)) {
+			/** @todo add logging */
+			return false;
+		}
+		
+		foreach ($entries as $rawEntry) {
+			
+			$entry = new LogEntry();
+
+			
+			$origTime = $rawEntry['time'];
+			
+			$time = new MongoDate();
+      $time->sec = $origTime->getTimestamp();
+			
+			$entry->set(array(
+        'message' => $rawEntry['message'],
+        'time' => $time,
+        'severity' => $rawEntry['severity'],
+        'data'     => $rawEntry['data'],
+			
+        'project' => $rawEntry['project'],
+        'type' => $rawEntry['type'],
+        'environment' => $rawEntry['environment'],
+        'bucket' => $rawEntry['bucket']
+      ));
+      
+      $flag = $entry->save();
 		}
 	}
 	

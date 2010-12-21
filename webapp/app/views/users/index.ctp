@@ -1,5 +1,5 @@
 
-<?php echo $html->link('Add Import', 'add'); ?>
+<?php echo $html->link('Add User', 'add'); ?>
 <br>
 <br>
 <?php foreach($results as $result): ?>

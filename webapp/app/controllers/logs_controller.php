@@ -33,7 +33,7 @@ class LogsController extends AppController
 	{
 		if (!$id) return;
 		
-		$entry = $this->LogEntry->read(null, '4cf3ab28fd5c131a18000000');
+		$entry = $this->LogEntry->read(null, $id);
     if (!$entry) return;
 		
     $this->set('entry', $entry['LogEntry']);
