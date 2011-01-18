@@ -26,6 +26,8 @@ foreach ($entry as $key => $value)
 		case 'time':
 			$value = date('Y-m-d H:i:s', $value->sec);
 			break;
+		case 'data':
+			$value = print_r($value, true);
 	}
 	
 	$output .= "<tr><td>$key</td><td>$value</td>";
