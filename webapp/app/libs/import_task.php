@@ -2,6 +2,8 @@
 
 class ImportTask
 {
+	const SERIALIZE_SEPERATOR = '-|-|-|-|-|-|-|-|-|-|-|-|-';
+	
 	public function run()
 	{
 		App::import('Model', 'LogEntry');
@@ -12,6 +14,8 @@ class ImportTask
 		foreach ($imports as $import)
 		{
 			$this->doImport($import['Import']);
+			
+			echo "Import " . $import['Import']['name'] . ' finished.';
 		}
 	}
 	
@@ -44,18 +48,23 @@ class ImportTask
 		}
 	}
 	
-	protected function importLogSerialized($fileContent, $import) {
-		$entries = unserialize($fileContent);
-		
-		if ($entries === false || !is_array($entries)) {
-			/** @todo add logging */
-			return false;
-		}
-		
-		foreach ($entries as $rawEntry) {
+	protected function importLogSerialized($fileContent, $import) 
+	{
+		$entries = explode(self::SERIALIZE_SEPERATOR, $fileContent);
+
+		foreach ($entries as $rawEntry) 
+		{
+			if (!strlen($rawEntry)) continue;
+			
+			$rawEntry = unserialize($rawEntry);
+
+			if ($rawEntry === false)
+			{
+				continue;
+				/** @todo add logging */
+			}
 			
 			$entry = new LogEntry();
-
 			
 			$origTime = $rawEntry['time'];
 			
@@ -83,53 +92,88 @@ class ImportTask
 		$messages = explode(PHP_EOL, $fileContent);
 		$defaults = $import['defaults'];
 		
-		foreach ($messages as $message)
+		$lines = count($messages);
+		
+		if (!$lines) continue;
+		
+		$entry = null;
+		$stackTrace = '';
+		
+		for ($i=0; $i < $lines; $i++)
 		{
+			$message = $messages[$i];
+			
 			$pattern = '/\[(.*?)\]\sPHP (.*?)\:\s+(.*)/';
 			$matches = array();
 			
 			preg_match($pattern, $message, $matches);
 			
-			if (count($matches) !== 4) continue;
-			
-			switch ($matches[2])
+			if (count($matches) !== 4)
 			{
-				case 'Warning':
-				case 'Notice':
-					$severity = 'WARNING';
-					break;
-				case 'Fatal error':
-				case 'Parse error':
-					$severity = 'ERROR';
-					break;
-				case 'Strict Standards':
-				case 'Deprecated':
-					$severity = 'DEBUG';
-					break;
-				default:
-					$matches[3] = $matches[2]. ': ' . $matches[3];
-					$severity = 'OTHER';
-					break;
+				if (is_string($message)) $stackTrace .= $message;
+				
+				// set stack and persist if we are at end of file
+				if ($i === $lines - 1 && $entry)
+				{
+					$entry->set(array('data' => $stackTrace));
+					$entry->save();
+				}
+			} else 
+			{
+				// save previous entry
+				if ($entry)
+				{
+					$entry->set(array('data' => $stackTrace));
+					$entry->save();
+				}
+				
+				// create new entry
+				$entry = new LogEntry();
+				
+				$severity = $this->mapPhpType($matches[2]);
+			
+				$time = new MongoDate();
+				$time->sec = strtotime($matches[1]);
+				
+				$entry->set(array(
+					'message' => $matches[3],
+					'time' => $time,
+					'severity' => $severity,
+				
+					'project' => $defaults['project'],
+					'type' => 'php',
+					'environment' => $defaults['environment'],
+					'bucket' => $defaults['bucket']
+				));
 			}
-			
-			$entry = new LogEntry();
-			
-			$time = new MongoDate();
-			$time->sec = strtotime($matches[1]);
-			
-			$entry->set(array(
-				'message' => $matches[3],
-				'time' => $time,
-				'severity' => $severity,
-			
-				'project' => $defaults['project'],
-				'type' => 'php',
-				'environment' => $defaults['environment'],
-				'bucket' => $defaults['bucket']
-			));
-			
-			$flag = $entry->save();
 		}
+	}
+	
+	protected function mapPhpType($type)
+	{
+		$severity = null;
+		
+		switch ($type)
+		{
+			case 'Warning':
+			case 'Notice':
+				$severity = 'WARNING';
+				break;
+			case 'Fatal error':
+			case 'Parse error':
+				$severity = 'ERROR';
+				break;
+			case 'Strict Standards':
+			case 'Deprecated':
+				$severity = 'DEBUG';
+				break;
+			default:
+				$matches[3] = $matches[2]. ': ' . $matches[3];
+				$severity = 'OTHER';
+				break;
+		}
+		
+		return $severity;
 	}
 	
 	protected function getFileData($path)
