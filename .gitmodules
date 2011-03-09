@@ -4,3 +4,6 @@
 [submodule "lib"]
 	path = lib
 	url = https://github.com/theduk3/spector-lib.git
+[submodule "webapp/vendors/lib/spector"]
+	path = webapp/vendors/lib/spector
+	url = git@github.com:theduke/spector-lib.git
