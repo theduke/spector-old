@@ -15,27 +15,52 @@ class Import extends AppModel
 	
 			'name' => array('type'=>'string'),
 	
-			// options: "remote-file", "file"
-			'type' => array('type'=>'string'),
+			// options: "remote-file", "file", "drupal" 
+			'fetcher' => array('type'=>'string'),
 	
 			// options: "csv", "serialized", "php"
-			'format'=>array('type'=>'string'),
-
-			// defaults
-			'defaults' => array(
-				'project' => array('type'=>'string'),
-				'environment' => array('type'=>'string'),
-				'type'=>array('type'=>'string'),
-				'bucket'=>array('type'=>'string')
-	     ),
+			'handler'=>array('type'=>'string'),
+	
+			'deleteSource'=>array('type'=>'boolean'),
+			
+			'lastImportIdentifier'=>array('type'=>'string'),
+			
+			'defaultProject' => array('type'=>'string'),
+			'defaultEnvironment' => array('type'=>'string'),
+			'defaultType'=>array('type'=>'string'),
+			'defaultBucket'=>array('type'=>'string'),
 			
 			'remote' => array(
 				'host' => array('type'=>'string'),
 				'port' => array('type'=>'string'),
-				'user' => array('type'=>'string'),
+				'username' => array('type'=>'string'),
 				'password' => array('type'=>'string'),
-				'path' => array('type'=>'string')
+				'resourcePath' => array('type'=>'string')
 			)
-		);	
-
+		);
+		
+		public function fromImport(\Spector\Import\Import $import)
+		{
+			$this->set($import->toArray());
+		}
+		
+		public function toArray()
+		{
+			$a = array();
+			
+			foreach ($this->mongoSchema as $field => $value)
+			{
+				$a[$field] = $this->field($field);
+			}
+			
+			return $a;
+		}
+		
+		public function toImport()
+		{
+			$i = new \Spector\Import\Import();
+			$i->fromArray($this->toArray());
+			
+			return $i;
+		}
 }

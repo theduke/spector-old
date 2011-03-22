@@ -6,7 +6,10 @@
 		echo $form->input('Import.name');
 		
 		echo $form->label('Type');
-		echo $form->select('Import.type', array('remote-file' => 'remote-file', 'file' => 'file'));
+		echo $form->select('Import.type', array(
+			'remote-file' => 'remote-file', 
+			'file' => 'file', 
+			"drupal" => "drupal"));
     
 		echo $form->label('Format');
 		echo $form->select('Import.format', array('csv' => 'csv', 'serialized' => 'serialized', 'php' => 'php'));
@@ -21,6 +24,7 @@
 		echo $form->input('Import.remote.user');
 		echo $form->input('Import.remote.password');
 		echo $form->input('Import.remote.path');
+		
 	?>
 	</fieldset>
 <?php echo $form->end('Submit');?>
