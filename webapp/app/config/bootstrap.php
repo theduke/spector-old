@@ -21,6 +21,12 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+
+require ROOT . '/vendors/lib/spector/lib/php53/Spector/Common/ClassLoader.php';
+
+$autoloader = new \Spector\Common\ClassLoader('Spector', ROOT . '/vendors/lib/spector/lib/php53');
+$autoloader->register();
+
 /**
  * The settings below can be used to set additional paths to models, views and controllers.
  * This is related to Ticket #470 (https://trac.cakephp.org/ticket/470)
